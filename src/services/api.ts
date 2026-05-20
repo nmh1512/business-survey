@@ -1,8 +1,9 @@
 ﻿// @ts-nocheck
 import { Storage } from './storage';
 
-const API_BASE = window.API_BASE || 'https://api.beemon.shop';
+const API_BASE = import.meta.env.VITE_DOCORP_API_BASE || 'https://api.beemon.shop';
 
+console.log('API Base URL:', import.meta.env.VITE_DOCORP_API_BASE);
 const getAdminAuthHeaders = () => {
   const token = Storage.getAdminToken();
   return token ? { Authorization: `Bearer ${token}` } : {};
@@ -58,3 +59,4 @@ export const Api = {
     return res.json();
   },
 };
+

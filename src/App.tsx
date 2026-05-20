@@ -1,4 +1,4 @@
-
+﻿
 // @ts-nocheck
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
@@ -108,9 +108,9 @@ import { buildRecommendations, classifyCategory, computeScores, getStressLevel, 
     const [hasProgress, setHasProgress] = useState(false);
     const [sessionId] = useState(() => Storage.getSessionId());
     const [businessCode] = useState(() => {
-      const fromWindow = (window as any).DOCORP_BUSINESS_CODE || (window as any).BUSINESS_CODE;
+      const fromEnv = import.meta.env.VITE_DOCORP_BUSINESS_CODE;
       const fromQuery = new URLSearchParams(window.location.search).get('businessCode');
-      return (fromQuery || fromWindow || '').toString().trim().toLowerCase();
+      return (fromQuery || fromEnv || '').toString().trim().toLowerCase();
     });
 
     // On mount: load progress + history
@@ -284,6 +284,7 @@ import { buildRecommendations, classifyCategory, computeScores, getStressLevel, 
 
   export default Root;
   
+
 
 
 
