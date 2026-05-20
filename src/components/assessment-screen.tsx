@@ -79,87 +79,95 @@ export function AssessmentScreen({
   const selected = answers[q.id];
 
   return (
-    <div className="min-h-screen w-full flex flex-col" style={{ background: C.bg }}>
-      <div className="px-5 md:px-10 pt-5 md:pt-6 pb-3">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <button onClick={onBackToWelcome} style={{ fontSize: 13, color: C.inkSoft, fontWeight: 600, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+    <div className="min-h-screen w-full flex flex-col bg-bg">
+      <div className="px-5 pb-3 pt-5 md:px-10 md:pt-6">
+        <div className="mx-auto flex max-w-4xl items-center justify-between">
+          <button
+            onClick={onBackToWelcome}
+            className="inline-flex items-center gap-1.5 border-0 bg-transparent p-0 text-[13px] font-semibold text-ink-soft"
+          >
             <I.arrowLeft size={14} /> Thoát
           </button>
           <DocorpLogo size={20} />
         </div>
-        <div className="max-w-4xl mx-auto mt-5">
-          <div className="flex items-center justify-between mb-2.5">
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 12, color: C.inkSoft, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+
+        <div className="mx-auto mt-5 max-w-4xl">
+          <div className="mb-2.5 flex items-center justify-between">
+            <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.06em] text-ink-soft">
               <CatIcon size={14} color={C.red} />
               {cat.icon} · {cat.label}
             </span>
-            <span style={{ fontSize: 14, color: C.ink, fontWeight: 700 }}>
-              {currentIndex + 1} <span style={{ color: C.inkMute, fontWeight: 500 }}>/ {total}</span>
+            <span className="text-sm font-bold text-ink">
+              {currentIndex + 1} <span className="font-medium text-ink-mute">/ {total}</span>
             </span>
           </div>
-          <div style={{ height: 6, background: C.surface, width: '100%', borderRadius: 999, overflow: 'hidden' }}>
-            <div style={{ height: '100%', width: `${progress}%`, background: `linear-gradient(90deg, ${C.red}, ${C.redDeep})`, transition: 'width 0.5s cubic-bezier(.4,0,.2,1)', borderRadius: 999 }} />
-          </div>
+
+          <progress className="w-full h-1.5 border-0 rounded-full overflow-hidden bg-surface [&::-webkit-progress-bar]:bg-surface [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-gradient-to-r [&::-webkit-progress-value]:from-[#e11d48] [&::-webkit-progress-value]:to-[#be123c] [&::-webkit-progress-value]:transition-[width] [&::-webkit-progress-value]:duration-700 [&::-webkit-progress-value]:ease-in-out [&::-moz-progress-bar]:rounded-full [&::-moz-progress-bar]:bg-gradient-to-r [&::-moz-progress-bar]:from-[#e11d48] [&::-moz-progress-bar]:to-[#be123c] [&::-moz-progress-bar]:transition-[width] [&::-moz-progress-bar]:duration-700 [&::-moz-progress-bar]:ease-in-out" max={100} value={progress} />
         </div>
       </div>
-      <div className="flex-1 flex items-center px-5 md:px-10 py-8">
-        <div className="max-w-4xl w-full mx-auto">
-          <div style={{ fontSize: 13, fontWeight: 700, color: C.red, marginBottom: 14 }}>Câu hỏi {currentIndex + 1}</div>
-          <h2 key={q.id} className="anim-fadeUp" style={{ fontWeight: 700, fontSize: 'clamp(22px, 4vw, 40px)', lineHeight: 1.22, letterSpacing: '-0.02em', color: C.ink, maxWidth: 820 }}>
+
+      <div className="flex flex-1 items-center px-5 py-8 md:px-10">
+        <div className="mx-auto w-full max-w-4xl">
+          <div className="mb-3.5 text-[13px] font-bold text-primary">Câu hỏi {currentIndex + 1}</div>
+
+          <h2
+            key={q.id}
+            className="anim-fadeUp max-w-[820px] text-[clamp(22px,4vw,40px)] font-bold leading-[1.22] tracking-[-0.02em] text-ink"
+          >
             {q.text}
           </h2>
-          <div style={{ fontSize: 13, color: C.inkSoft, marginTop: 14, fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+
+          <div className="mt-3.5 inline-flex items-center gap-2 text-[13px] font-medium text-ink-soft">
             <I.leaf size={14} color={C.red} />
             <span>Hãy nghĩ về 2–4 tuần gần nhất</span>
           </div>
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-5 gap-2.5 md:gap-3">
+
+          <div className="mt-8 grid grid-cols-1 gap-2.5 md:grid-cols-5 md:gap-3">
             {SCALE.map((opt) => {
               const isSelected = selected === opt.value;
               return (
                 <button
                   key={opt.value}
                   onClick={() => handleSelect(opt.value)}
-                  style={{ background: isSelected ? C.red : '#FFFFFF', color: isSelected ? '#FFFFFF' : C.ink, border: `2px solid ${isSelected ? C.red : C.rule}`, borderRadius: 14, cursor: 'pointer', padding: '16px 14px', textAlign: 'left', transform: isSelected ? 'translateY(-2px)' : 'translateY(0)', boxShadow: isSelected ? '0 8px 20px rgba(225, 29, 46, 0.25)' : '0 1px 2px rgba(0,0,0,0.02)', transition: 'all 0.2s ease' }}
-                  onMouseEnter={(e) => {
-                    if (!isSelected) {
-                      e.currentTarget.style.borderColor = C.red;
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                      e.currentTarget.style.boxShadow = '0 8px 16px rgba(0,0,0,0.06)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isSelected) {
-                      e.currentTarget.style.borderColor = C.rule;
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.02)';
-                    }
-                  }}
+                  className={`rounded-[14px] border-2 p-[16px_14px] text-left transition-all duration-200 ${
+                    isSelected
+                      ? 'border-primary bg-primary text-white -translate-y-0.5 shadow-[0_8px_20px_rgba(225,29,46,0.25)]'
+                      : 'border-rule bg-bg text-ink hover:border-primary hover:-translate-y-0.5 hover:shadow-[0_8px_16px_rgba(0,0,0,0.06)]'
+                  }`}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                    <div style={{ fontSize: 22, fontWeight: 800, color: isSelected ? '#FFFFFF' : C.red }}>{opt.value}</div>
-                    <span style={{ fontSize: 22 }}>{opt.emoji}</span>
+                  <div className="mb-2 flex items-center justify-between">
+                    <div className={`text-[22px] font-extrabold ${isSelected ? 'text-white' : 'text-primary'}`}>{opt.value}</div>
+                    <span className="text-[22px]">{opt.emoji}</span>
                   </div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: isSelected ? '#FFFFFF' : C.ink, lineHeight: 1.3 }}>{opt.label}</div>
+                  <div className={`text-[13px] font-semibold leading-[1.3] ${isSelected ? 'text-white' : 'text-ink'}`}>{opt.label}</div>
                 </button>
               );
             })}
           </div>
-          <div className="mt-8 flex items-center justify-between">
+
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <button
               onClick={() => currentIndex > 0 && setCurrentIndex(currentIndex - 1)}
               disabled={currentIndex === 0}
-              style={{ background: 'transparent', border: 'none', cursor: currentIndex === 0 ? 'not-allowed' : 'pointer', color: currentIndex === 0 ? C.inkMute : C.inkSoft, fontSize: 14, fontWeight: 600, padding: 0, display: 'inline-flex', alignItems: 'center', gap: 6 }}
+              className={`w-full justify-center sm:w-auto sm:justify-start inline-flex items-center gap-1.5 border-0 bg-transparent p-0 text-sm font-semibold ${
+                currentIndex === 0 ? 'cursor-not-allowed text-ink-mute' : 'text-ink-soft'
+              }`}
             >
               <I.arrowLeft size={14} /> Câu trước
             </button>
+
             {selected && currentIndex < total - 1 && (
-              <button onClick={() => setCurrentIndex(currentIndex + 1)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: C.red, fontSize: 14, fontWeight: 700, padding: 0, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <button
+                onClick={() => setCurrentIndex(currentIndex + 1)}
+                className="w-full justify-center sm:w-auto sm:justify-end inline-flex items-center gap-1.5 border-0 bg-transparent p-0 text-sm font-bold text-primary"
+              >
                 Câu tiếp <I.arrowRight size={14} />
               </button>
             )}
           </div>
         </div>
       </div>
+
       <div className="h-8" />
     </div>
   );

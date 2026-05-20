@@ -1,4 +1,4 @@
-﻿
+
 // @ts-nocheck
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
@@ -155,9 +155,26 @@ import { buildRecommendations, classifyCategory, computeScores, getStressLevel, 
           }, C),
         ]);
       } catch (error) {
-        console.error(error);
-        alert('Không lưu được kết quả. Vui lòng thử lại.');
-        return;
+        console.error("Lỗi khi lưu kết quả lên server:", error);
+        try {
+          const scores = computeScores(answers);
+          const level = getStressLevel(scores.totalScore);
+          const localEntry = {
+            date: new Date().toISOString().split('T')[0],
+            totalScore: scores.totalScore,
+            stressLevel: level.level,
+            categoryScores: Object.keys(scores.categories).map((catId) => ({
+              categoryId: catId,
+              score: scores.categories[catId],
+            })),
+          };
+          setHistory((prev) => [
+            ...prev,
+            mapApiHistoryToLegacy(localEntry, C),
+          ]);
+        } catch (localError) {
+          console.error("Lỗi khi tạo lịch sử cục bộ:", localError);
+        }
       }
 
       Storage.clearProgress();

@@ -2,6 +2,17 @@
 import { useMemo } from 'react';
 import { CartesianGrid, Line, LineChart, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
+function TrendTooltip({ active, payload, label }) {
+  if (!active || !payload || payload.length === 0) return null;
+  const value = payload[0]?.value;
+  return (
+    <div className="rounded-[10px] border border-rule bg-bg px-3 py-2 text-[13px]">
+      <div className="font-semibold text-ink">{label}</div>
+      <div className="text-ink-soft">Điểm: <span className="font-bold text-ink">{value}</span></div>
+    </div>
+  );
+}
+
 export function ResultsScreen({
   answers,
   onRestart,
@@ -68,31 +79,18 @@ export function ResultsScreen({
     };
 
     return (
-      <div className="min-h-screen w-full" style={{ background: C.bg }}>
+      <div className="min-h-screen w-full bg-bg">
         <div className="px-5 md:px-10 pt-6 md:pt-8 pb-5">
           <div className="max-w-6xl mx-auto flex items-center justify-between flex-wrap gap-3">
             <DocorpLogo size={24} />
-            <div className="flex gap-2 no-print">
-              <button onClick={handleExport} style={{
-                background: '#FFFFFF', border: `1.5px solid ${C.rule}`, color: C.ink,
-                fontSize: 13, fontWeight: 700, cursor: 'pointer', borderRadius: 999,
-                padding: '9px 16px', display: 'inline-flex', alignItems: 'center', gap: 6,
-              }}>
+            <div className="no-print flex flex-wrap gap-2">
+              <button className="inline-flex items-center gap-1.5 rounded-full border border-rule bg-bg px-4 py-[9px] text-[13px] font-bold text-ink" onClick={handleExport}>
                 <I.download size={14} /> JSON
               </button>
-              <button onClick={() => window.print()} style={{
-                background: '#FFFFFF', border: `1.5px solid ${C.rule}`, color: C.ink,
-                fontSize: 13, fontWeight: 700, cursor: 'pointer', borderRadius: 999,
-                padding: '9px 16px', display: 'inline-flex', alignItems: 'center', gap: 6,
-              }}>
+              <button className="inline-flex items-center gap-1.5 rounded-full border border-rule bg-bg px-4 py-[9px] text-[13px] font-bold text-ink" onClick={() => window.print()}>
                 <I.printer size={14} /> In
               </button>
-              <button onClick={onRestart} style={{
-                background: C.red, border: 'none', color: '#FFFFFF',
-                fontSize: 13, fontWeight: 700, cursor: 'pointer', borderRadius: 999,
-                padding: '9px 16px', boxShadow: '0 4px 12px rgba(225,29,46,0.25)',
-                display: 'inline-flex', alignItems: 'center', gap: 6,
-              }}>
+              <button className="inline-flex items-center gap-1.5 rounded-full border-0 bg-primary px-4 py-[9px] text-[13px] font-bold text-white shadow-[0_4px_12px_rgba(225,29,46,0.25)]" onClick={onRestart}>
                 <I.rotate size={14} /> Làm lại
               </button>
             </div>
@@ -102,18 +100,14 @@ export function ResultsScreen({
         {/* Warm intro */}
         <div className="px-5 md:px-10">
           <div className="max-w-6xl mx-auto anim-fadeUp">
-            <div style={{
-              background: C.surfaceWarm, borderRadius: 18,
-              padding: '22px 24px', borderLeft: `4px solid ${C.red}`,
-              marginBottom: 28,
-            }}>
-              <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+            <div className="mb-7 rounded-[18px] border-l-4 border-l-primary bg-surface-warm px-6 py-[22px]">
+              <div className="flex items-start gap-3.5">
                 <I.heart size={26} color={C.red} />
                 <div>
-                  <div style={{ fontSize: 12, letterSpacing: '0.16em', textTransform: 'uppercase', color: C.red, fontWeight: 700, marginBottom: 4 }}>
+                  <div className="mb-1 text-xs font-bold uppercase tracking-[0.16em] text-primary">
                     Cảm ơn bạn đã thành thật
                   </div>
-                  <p style={{ fontSize: 15, lineHeight: 1.55, color: C.ink, fontWeight: 500 }}>
+                  <p className="text-[15px] font-medium leading-[1.55] text-ink">
                     Dưới đây là những gì bạn vừa chia sẻ. Đây là một bức ảnh chụp tại thời điểm này, không phải bản án. Mọi thứ đều có thể cải thiện, và bạn đã đi bước đầu rồi. 🌱
                   </p>
                 </div>
@@ -129,26 +123,13 @@ export function ResultsScreen({
               <Tag color={stressLevel.color} bg={stressLevel.color + '1A'}>
                 Mức {stressLevel.level}/5 · {stressLevel.sub}
               </Tag>
-              <h1 style={{
-                fontWeight: 800, fontSize: 'clamp(36px, 6vw, 72px)',
-                lineHeight: 1, letterSpacing: '-0.03em',
-                marginTop: 16, color: stressLevel.color,
-              }}>
-                {stressLevel.label} <span style={{ fontSize: '0.6em' }}>{stressLevel.emoji}</span>
+              <h1 className={`mt-4 text-[clamp(36px,6vw,72px)] font-extrabold leading-none tracking-[-0.03em] ${stressLevel.level === 1 ? 'text-[#16A34A]' : stressLevel.level === 2 ? 'text-[#EAB308]' : stressLevel.level === 3 ? 'text-[#F97316]' : stressLevel.level === 4 ? 'text-[#DC2626]' : 'text-[#7F1D1D]'}`}>
+                {stressLevel.label} <span className="text-[0.6em]">{stressLevel.emoji}</span>
               </h1>
-              <p style={{
-                fontSize: 16, lineHeight: 1.6, marginTop: 20,
-                color: C.inkSoft, maxWidth: 470, fontWeight: 500,
-              }}>{stressLevel.summary}</p>
+              <p className="mt-5 max-w-[470px] text-base font-medium leading-[1.6] text-ink-soft">{stressLevel.summary}</p>
 
               {scoreDelta !== null && (
-                <div style={{
-                  marginTop: 22, display: 'inline-flex', alignItems: 'center', gap: 8,
-                  fontSize: 13, fontWeight: 600,
-                  color: scoreDelta < 0 ? C.level1 : (scoreDelta > 0 ? C.level4 : C.inkSoft),
-                  background: (scoreDelta < 0 ? C.level1 : (scoreDelta > 0 ? C.level4 : C.inkSoft)) + '15',
-                  padding: '8px 14px', borderRadius: 999,
-                }}>
+                <div className={`mt-[22px] inline-flex items-center gap-2 rounded-full px-[14px] py-2 text-[13px] font-semibold ${scoreDelta < 0 ? 'bg-[#16A34A15] text-[#16A34A]' : scoreDelta > 0 ? 'bg-[#DC262615] text-[#DC2626]' : 'bg-[#5A5A5F15] text-ink-soft'}`}>
                   {scoreDelta < 0 ? <I.trendingDown size={14}/> : scoreDelta > 0 ? <I.trendingUp size={14}/> : <I.activity size={14}/>}
                   <span>
                     {scoreDelta < 0
@@ -162,11 +143,11 @@ export function ResultsScreen({
             </div>
 
             <div className="md:col-span-7">
-              <div style={{ fontSize: 12, letterSpacing: '0.18em', textTransform: 'uppercase', color: C.inkSoft, fontWeight: 700, marginBottom: 12 }}>
+              <div className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-ink-soft">
                 Tổng điểm · {totalScore} / 120
               </div>
 
-              <div style={{ display: 'flex', gap: 4, marginBottom: 12, height: 56 }}>
+              <div className="mb-3 flex h-14 gap-1">
                 {[
                   { range: [24, 43], color: C.level1, label: 'Lành mạnh' },
                   { range: [44, 62], color: C.level2, label: 'Cấp tính' },
@@ -175,54 +156,43 @@ export function ResultsScreen({
                   { range: [102, 120], color: C.level5, label: 'Burnout' },
                 ].map((band, i) => {
                   const inBand = totalScore >= band.range[0] && totalScore <= band.range[1];
+                  const bandBgClass = i === 0 ? 'bg-[#16A34A]' : i === 1 ? 'bg-[#EAB308]' : i === 2 ? 'bg-[#F97316]' : i === 3 ? 'bg-[#DC2626]' : 'bg-[#7F1D1D]';
+                  const bandTextClass = i === 0 ? 'text-[#16A34A]' : i === 1 ? 'text-[#EAB308]' : i === 2 ? 'text-[#F97316]' : i === 3 ? 'text-[#DC2626]' : 'text-[#7F1D1D]';
                   return (
-                    <div key={i} style={{
-                      flex: 1, background: inBand ? band.color : C.surface,
-                      position: 'relative', borderRadius: 8,
-                      transition: 'all 0.5s ease',
-                      transform: inBand ? 'scale(1.05)' : 'scale(1)',
-                    }}>
+                    <div key={i} className={`relative flex-1 rounded-lg transition-all duration-500 ${inBand ? `${bandBgClass} scale-105` : 'bg-surface scale-100'}`}>
                       {inBand && (
-                        <div style={{
-                          position: 'absolute', top: '50%', left: '50%',
-                          transform: 'translate(-50%, -50%)', color: '#FFFFFF',
-                        }}>
+                        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white">
                           <I.check size={18} strokeWidth={3} color="#FFFFFF" />
                         </div>
                       )}
-                      <div style={{
-                        position: 'absolute', bottom: -22, left: 0, right: 0,
-                        textAlign: 'center', fontSize: 11,
-                        color: inBand ? band.color : C.inkMute,
-                        fontWeight: inBand ? 700 : 500,
-                      }}>{band.label}</div>
+                      <div className={`absolute inset-x-0 -bottom-[22px] text-center text-[11px] ${inBand ? `${bandTextClass} font-bold` : 'text-ink-mute font-medium'}`}>{band.label}</div>
                     </div>
                   );
                 })}
               </div>
 
-              <div style={{ height: 30 }} />
+              <div className="h-[30px]" />
 
-              <div className="grid grid-cols-3 gap-3 mt-8">
-                <div style={{ background: C.surface, padding: 16, borderRadius: 14 }}>
-                  <div style={{ fontSize: 32, color: C.red, fontWeight: 800, lineHeight: 1 }}>{totalScore}</div>
-                  <div style={{ fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: C.inkSoft, marginTop: 8, fontWeight: 700 }}>
+              <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <div className="rounded-[14px] bg-surface p-4">
+                  <div className="text-[32px] font-extrabold leading-none text-primary">{totalScore}</div>
+                  <div className="mt-2 text-[11px] font-bold uppercase tracking-[0.1em] text-ink-soft">
                     Tổng điểm
                   </div>
                 </div>
-                <div style={{ background: C.surface, padding: 16, borderRadius: 14 }}>
-                  <div style={{ fontSize: 32, color: C.red, fontWeight: 800, lineHeight: 1 }}>
+                <div className="rounded-[14px] bg-surface p-4">
+                  <div className="text-[32px] font-extrabold leading-none text-primary">
                     {drivers.filter(c => classifyCategory(c.sum, c.questions.length, C).levelEn === 'High').length}
                   </div>
-                  <div style={{ fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: C.inkSoft, marginTop: 8, fontWeight: 700 }}>
+                  <div className="mt-2 text-[11px] font-bold uppercase tracking-[0.1em] text-ink-soft">
                     Yếu tố cao
                   </div>
                 </div>
-                <div style={{ background: C.surface, padding: 16, borderRadius: 14 }}>
-                  <div style={{ fontSize: 32, color: C.red, fontWeight: 800, lineHeight: 1 }}>
+                <div className="rounded-[14px] bg-surface p-4">
+                  <div className="text-[32px] font-extrabold leading-none text-primary">
                     {Math.round((burnout.sum / burnout.max) * 100)}%
                   </div>
-                  <div style={{ fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: C.inkSoft, marginTop: 8, fontWeight: 700 }}>
+                  <div className="mt-2 text-[11px] font-bold uppercase tracking-[0.1em] text-ink-soft">
                     Tín hiệu burnout
                   </div>
                 </div>
@@ -241,21 +211,21 @@ export function ResultsScreen({
                 <div className="grid md:grid-cols-12 gap-8 md:gap-10 items-start mb-8">
                   <div className="md:col-span-4">
                     <Tag>Lịch sử của bạn</Tag>
-                    <h2 style={{ fontWeight: 800, fontSize: 'clamp(26px, 3.5vw, 38px)', lineHeight: 1.1, letterSpacing: '-0.02em', marginTop: 14, color: C.ink }}>
-                      Bạn đang đi <span style={{ color: C.red }}>theo hướng nào</span>?
+                    <h2 className="mt-3.5 text-[clamp(26px,3.5vw,38px)] font-extrabold leading-[1.1] tracking-[-0.02em] text-ink">
+                      Bạn đang đi <span className="text-primary">theo hướng nào</span>?
                     </h2>
-                    <p style={{ fontSize: 15, lineHeight: 1.6, marginTop: 14, color: C.inkSoft, fontWeight: 500 }}>
+                    <p className="mt-3.5 text-[15px] font-medium leading-[1.6] text-ink-soft">
                       Đường này quan trọng hơn bất kỳ điểm số nào — nó cho thấy xu hướng. Mục tiêu là điểm tổng giảm dần qua các lần đánh giá.
                     </p>
                   </div>
                   <div className="md:col-span-8">
-                    <div style={{ background: C.surface, borderRadius: 18, padding: 20, height: 320 }}>
+                    <div className="h-80 rounded-[18px] bg-surface p-5">
                       <ResponsiveContainer width="100%" height="100%">
                         <LineChart data={trendData} margin={{ top: 10, right: 16, left: -8, bottom: 4 }}>
                           <CartesianGrid stroke={C.rule} strokeDasharray="3 3" vertical={false} />
                           <XAxis dataKey="date" tick={{ fill: C.inkSoft, fontSize: 11, fontWeight: 600 }} stroke={C.rule} />
                           <YAxis domain={[24, 120]} tick={{ fill: C.inkMute, fontSize: 11 }} stroke={C.rule} />
-                          <Tooltip contentStyle={{ borderRadius: 10, border: `1px solid ${C.rule}`, fontSize: 13, fontFamily: 'SVN Gilroy' }} />
+                          <Tooltip content={<TrendTooltip />} />
                           <Line type="monotone" dataKey="score" stroke={C.red} strokeWidth={3} dot={{ fill: C.red, r: 5 }} activeDot={{ r: 7 }} />
                         </LineChart>
                       </ResponsiveContainer>
@@ -274,15 +244,15 @@ export function ResultsScreen({
             <div className="grid md:grid-cols-12 gap-8 md:gap-10 items-start mb-8">
               <div className="md:col-span-4">
                 <Tag>02 · Phân tích nguyên nhân</Tag>
-                <h2 style={{ fontWeight: 800, fontSize: 'clamp(26px, 3.5vw, 38px)', lineHeight: 1.1, letterSpacing: '-0.02em', marginTop: 14, color: C.ink }}>
-                  Áp lực đang đến từ <span style={{ color: C.red }}>đâu</span>?
+                <h2 className="mt-3.5 text-[clamp(26px,3.5vw,38px)] font-extrabold leading-[1.1] tracking-[-0.02em] text-ink">
+                  Áp lực đang đến từ <span className="text-primary">đâu</span>?
                 </h2>
-                <p style={{ fontSize: 15, lineHeight: 1.6, marginTop: 14, color: C.inkSoft, fontWeight: 500 }}>
+                <p className="mt-3.5 text-[15px] font-medium leading-[1.6] text-ink-soft">
                   6 nhóm nguyên nhân chính, được chuẩn hóa theo thang 0–100. Bất kỳ yếu tố nào trên 70% sẽ được đánh dấu là "Nguyên nhân chính" và nhận gợi ý hành động bên dưới.
                 </p>
               </div>
               <div className="md:col-span-8">
-                <div style={{ background: C.surface, borderRadius: 18, padding: 20, height: 360 }}>
+                <div className="h-[360px] rounded-[18px] bg-surface p-5">
                   <ResponsiveContainer width="100%" height="100%">
                     <RadarChart data={radarData}>
                       <PolarGrid stroke={C.rule} />
@@ -303,21 +273,23 @@ export function ResultsScreen({
                 return (
                   <div key={d.id} className="py-3.5">
                     <div className="flex items-baseline justify-between mb-2 flex-wrap gap-2">
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <div style={{ width: 30, height: 30, borderRadius: 8, background: cls.color + '1A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <div className="flex items-center gap-2.5">
+                        <div className={`flex h-[30px] w-[30px] items-center justify-center rounded-lg ${cls.levelEn === 'High' ? 'bg-[#DC26261A]' : cls.levelEn === 'Moderate' ? 'bg-[#F973161A]' : 'bg-[#16A34A1A]'}`}>
                           <DIcon size={15} color={cls.color} />
                         </div>
-                        <span style={{ fontSize: 17, fontWeight: 700, color: C.ink }}>{d.label}</span>
+                        <span className="text-[17px] font-bold text-ink">{d.label}</span>
                       </div>
                       <div className="flex items-baseline gap-3">
-                        <span style={{ fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: cls.color, fontWeight: 700 }}>{cls.level}</span>
-                        <span style={{ fontSize: 17, color: C.ink, fontWeight: 800 }}>{d.sum}/{d.max}</span>
+                        <span className={`text-[11px] font-bold uppercase tracking-[0.1em] ${cls.levelEn === 'High' ? 'text-[#DC2626]' : cls.levelEn === 'Moderate' ? 'text-[#F97316]' : 'text-[#16A34A]'}`}>{cls.level}</span>
+                        <span className="text-[17px] font-extrabold text-ink">{d.sum}/{d.max}</span>
                       </div>
                     </div>
-                    <div style={{ height: 6, background: C.surface, borderRadius: 999, overflow: 'hidden' }}>
-                      <div style={{ height: '100%', width: `${pct}%`, background: cls.color, transition: 'width 0.7s ease', borderRadius: 999 }} />
-                    </div>
-                    <p style={{ fontSize: 13, color: C.inkSoft, marginTop: 6, fontWeight: 500 }}>{d.description}</p>
+                    <progress
+                      className={`rs-progress ${cls.levelEn === 'High' ? 'rs-progress-high' : cls.levelEn === 'Moderate' ? 'rs-progress-medium' : 'rs-progress-low'}`}
+                      max={100}
+                      value={pct}
+                    />
+                    <p className="mt-1.5 text-[13px] font-medium text-ink-soft">{d.description}</p>
                   </div>
                 );
               })}
@@ -333,10 +305,10 @@ export function ResultsScreen({
             <div className="grid md:grid-cols-12 gap-8 md:gap-10 items-start">
               <div className="md:col-span-4">
                 <Tag>03 · Dấu hiệu burnout</Tag>
-                <h2 style={{ fontWeight: 800, fontSize: 'clamp(26px, 3.5vw, 38px)', lineHeight: 1.1, letterSpacing: '-0.02em', marginTop: 14, color: C.ink }}>
-                  3 chiều cạnh theo <span style={{ color: C.red }}>MBI Maslach</span>
+                <h2 className="mt-3.5 text-[clamp(26px,3.5vw,38px)] font-extrabold leading-[1.1] tracking-[-0.02em] text-ink">
+                  3 chiều cạnh theo <span className="text-primary">MBI Maslach</span>
                 </h2>
-                <p style={{ fontSize: 15, lineHeight: 1.6, marginTop: 14, color: C.inkSoft, fontWeight: 500 }}>
+                <p className="mt-3.5 text-[15px] font-medium leading-[1.6] text-ink-soft">
                   Lấy cảm hứng từ Maslach Burnout Inventory: cạn kiệt cảm xúc, xa cách (cynicism), và sụt giảm hiệu suất tự cảm nhận.
                 </p>
               </div>
@@ -347,15 +319,17 @@ export function ResultsScreen({
                     <div key={i}>
                       <div className="flex items-baseline justify-between mb-2 flex-wrap gap-2">
                         <div>
-                          <span style={{ fontSize: 20, fontWeight: 700, color: C.ink }}>{b.label}</span>
-                          <span style={{ fontSize: 12, color: C.inkMute, marginLeft: 8, fontWeight: 600 }}>{b.labelEn}</span>
-                          <div style={{ fontSize: 13, color: C.inkSoft, marginTop: 2, fontWeight: 500 }}>{b.desc}</div>
+                          <span className="text-xl font-bold text-ink">{b.label}</span>
+                          <span className="ml-2 text-xs font-semibold text-ink-mute">{b.labelEn}</span>
+                          <div className="mt-0.5 text-[13px] font-medium text-ink-soft">{b.desc}</div>
                         </div>
-                        <span style={{ fontSize: 26, color, fontWeight: 800 }}>{Math.round(b.value)}%</span>
+                        <span className={`text-[26px] font-extrabold ${b.value >= 70 ? 'text-[#DC2626]' : b.value >= 50 ? 'text-[#F97316]' : b.value >= 30 ? 'text-[#EAB308]' : 'text-[#16A34A]'}`}>{Math.round(b.value)}%</span>
                       </div>
-                      <div style={{ height: 8, background: C.surface, borderRadius: 999, overflow: 'hidden' }}>
-                        <div style={{ height: '100%', width: `${b.value}%`, background: color, transition: 'width 0.8s ease', borderRadius: 999 }} />
-                      </div>
+                      <progress
+                        className={`rs-progress rs-progress-lg ${b.value >= 70 ? 'rs-progress-high' : b.value >= 50 ? 'rs-progress-medium' : b.value >= 30 ? 'rs-progress-warn' : 'rs-progress-low'}`}
+                        max={100}
+                        value={b.value}
+                      />
                     </div>
                   );
                 })}
@@ -371,10 +345,10 @@ export function ResultsScreen({
           <div className="max-w-6xl mx-auto">
             <div className="mb-10">
               <Tag>04 · Gợi ý dành riêng cho bạn</Tag>
-              <h2 style={{ fontWeight: 800, fontSize: 'clamp(28px, 4.2vw, 48px)', lineHeight: 1.05, letterSpacing: '-0.025em', marginTop: 14, color: C.ink, maxWidth: 820 }}>
-                Những bước nhỏ, có chủ đích — <span style={{ color: C.red }}>bắt đầu ngay tuần này</span>.
+              <h2 className="mt-3.5 max-w-[820px] text-[clamp(28px,4.2vw,48px)] font-extrabold leading-[1.05] tracking-[-0.025em] text-ink">
+                Những bước nhỏ, có chủ đích — <span className="text-primary">bắt đầu ngay tuần này</span>.
               </h2>
-              <p style={{ fontSize: 15, lineHeight: 1.6, marginTop: 16, color: C.inkSoft, maxWidth: 640, fontWeight: 500 }}>
+              <p className="mt-4 max-w-[640px] text-[15px] font-medium leading-[1.6] text-ink-soft">
                 Các gợi ý dưới đây được cá nhân hóa theo những yếu tố nguy cơ cao của bạn. Hãy chọn <strong>một việc duy nhất</strong> cho mỗi nhóm — đừng cố làm hết tất cả cùng lúc. Hồi phục là quá trình từng bước.
               </p>
             </div>
@@ -383,51 +357,34 @@ export function ResultsScreen({
               {recommendations.map((rec, idx) => {
                 const RIcon = I[rec.iconKey];
                 return (
-                  <div key={rec.categoryId} className="grid md:grid-cols-12 gap-5 md:gap-6 print-clean" style={{
-                    background: idx === 0 ? C.surfaceWarm : C.surface,
-                    padding: '24px', borderRadius: 18,
-                    borderLeft: idx === 0 ? `4px solid ${C.red}` : 'none',
-                  }}>
+                  <div key={rec.categoryId} className={`print-clean grid gap-5 rounded-[18px] p-6 md:grid-cols-12 md:gap-6 ${idx === 0 ? 'border-l-4 border-l-primary bg-surface-warm' : 'bg-surface'}`}>
                     <div className="md:col-span-3">
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                        <div style={{
-                          width: 44, height: 44, borderRadius: 12,
-                          background: '#FFFFFF', display: 'flex',
-                          alignItems: 'center', justifyContent: 'center',
-                          boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-                        }}>
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-bg shadow-[0_2px_8px_rgba(0,0,0,0.06)]">
                           <RIcon size={20} color={C.red} />
                         </div>
-                        <div style={{ fontSize: 38, color: C.red, fontWeight: 800, lineHeight: 1, opacity: 0.4 }}>
+                        <div className="text-[38px] font-extrabold leading-none text-primary opacity-40">
                           {String(idx + 1).padStart(2, '0')}
                         </div>
                       </div>
-                      <div style={{ fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: C.inkSoft, fontWeight: 700, marginTop: 14 }}>
+                      <div className="mt-3.5 text-[11px] font-bold uppercase tracking-[0.16em] text-ink-soft">
                         Nguyên nhân chính
                       </div>
-                      <div style={{ fontSize: 18, fontWeight: 800, color: C.ink, marginTop: 4 }}>
+                      <div className="mt-1 text-lg font-extrabold text-ink">
                         {rec.label}
                       </div>
                     </div>
                     <div className="md:col-span-9">
-                      <h3 style={{ fontWeight: 800, fontSize: 22, lineHeight: 1.25, letterSpacing: '-0.01em', color: C.ink, marginBottom: 14 }}>
+                      <h3 className="mb-3.5 text-[22px] font-extrabold leading-[1.25] tracking-[-0.01em] text-ink">
                         {rec.title}
                       </h3>
-                      <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                      <ul className="m-0 list-none p-0">
                         {rec.items.map((item, i) => (
-                          <li key={i} style={{
-                            display: 'flex', gap: 14, padding: '12px 0',
-                            borderTop: i === 0 ? `1px solid ${C.rule}` : 'none',
-                            borderBottom: `1px solid ${C.rule}`,
-                          }}>
-                            <div style={{
-                              minWidth: 26, height: 26, borderRadius: '50%',
-                              background: C.redSoft, display: 'flex',
-                              alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                            }}>
+                          <li key={i} className="flex gap-3.5 border-b border-rule py-3 first:border-t">
+                            <div className="flex h-[26px] min-w-[26px] shrink-0 items-center justify-center rounded-full bg-primary-soft">
                               <I.check size={13} strokeWidth={3} color={C.red} />
                             </div>
-                            <span style={{ fontSize: 15, lineHeight: 1.55, color: C.ink, fontWeight: 500 }}>
+                            <span className="text-[15px] font-medium leading-[1.55] text-ink">
                               {item}
                             </span>
                           </li>
@@ -445,10 +402,10 @@ export function ResultsScreen({
         <section className="px-5 md:px-10 py-12 md:py-16">
           <div className="max-w-3xl mx-auto text-center">
             <I.sun size={36} color={C.red} />
-            <h3 style={{ fontWeight: 800, fontSize: 'clamp(22px, 3vw, 30px)', marginTop: 16, color: C.ink, letterSpacing: '-0.02em' }}>
+            <h3 className="mt-4 text-[clamp(22px,3vw,30px)] font-extrabold tracking-[-0.02em] text-ink">
               Cảm ơn vì đã dành thời gian cho chính mình.
             </h3>
-            <p style={{ fontSize: 15, lineHeight: 1.6, color: C.inkSoft, marginTop: 12, fontWeight: 500 }}>
+            <p className="mt-3 text-[15px] font-medium leading-[1.6] text-ink-soft">
               Hãy quay lại làm bài test này sau 4 tuần để theo dõi sự thay đổi. Sự cải thiện thường đến từ những điều chỉnh nhỏ, đều đặn — không phải những thay đổi lớn một lần.
             </p>
           </div>
@@ -461,13 +418,13 @@ export function ResultsScreen({
             <div className="grid md:grid-cols-12 gap-6 pt-8">
               <div className="md:col-span-7">
                 <Tag>Một công cụ phản tư, không phải chẩn đoán</Tag>
-                <p style={{ fontSize: 13, lineHeight: 1.65, color: C.inkSoft, marginTop: 12, maxWidth: 620, fontWeight: 500 }}>
+                <p className="mt-3 max-w-[620px] text-[13px] font-medium leading-[1.65] text-ink-soft">
                   Bài đánh giá dựa trên framework WHO ICD-11 về burnout, Maslach Burnout Inventory, HSE Stress Management Standards và mô hình Job Demand–Control. Được thiết kế cho mục đích tự nhận thức và các cuộc trò chuyện hỗ trợ — không thay thế chăm sóc sức khỏe tâm thần chuyên nghiệp. Nếu bạn đang trong giai đoạn khó khăn, hãy cân nhắc liên hệ chuyên gia hoặc chương trình hỗ trợ nhân viên (EAP) của tổ chức.
                 </p>
               </div>
               <div className="md:col-span-5 md:text-right">
                 <DocorpLogo size={20} withTagline />
-                <div style={{ fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: C.inkMute, marginTop: 12, fontWeight: 700 }}>
+                <div className="mt-3 text-[11px] font-bold uppercase tracking-[0.16em] text-ink-mute">
                   v1.0 · Bài đánh giá cá nhân
                 </div>
               </div>

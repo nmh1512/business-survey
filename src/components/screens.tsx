@@ -11,9 +11,23 @@ export function WelcomeScreen({
 }) {
   const isReturning = history && history.length > 0;
   const lastEntry = isReturning ? history[history.length - 1] : null;
+  const levelColorClass = {
+    1: 'text-[#16A34A]',
+    2: 'text-[#EAB308]',
+    3: 'text-[#F97316]',
+    4: 'text-[#DC2626]',
+    5: 'text-[#7F1D1D]',
+  };
+  const levelBgSoftClass = {
+    1: 'bg-[#16A34A22]',
+    2: 'bg-[#EAB30822]',
+    3: 'bg-[#F9731622]',
+    4: 'bg-[#DC262622]',
+    5: 'bg-[#7F1D1D22]',
+  };
 
   return (
-    <div className="min-h-screen w-full" style={{ background: C.bg }}>
+    <div className="min-h-screen w-full bg-bg">
       <div className="px-5 md:px-12 pt-6 md:pt-8 flex justify-between items-center max-w-7xl mx-auto gap-4 flex-wrap">
         <DocorpLogo size={26} />
         <Tag>{isReturning ? 'Chào mừng quay lại 👋' : 'Bài đánh giá nội bộ'}</Tag>
@@ -23,55 +37,53 @@ export function WelcomeScreen({
         <div className="grid md:grid-cols-12 gap-10 md:gap-12 items-start">
           <div className="md:col-span-7 anim-fadeUp">
             <Tag>
-              <I.heart size={12} /> <span style={{ marginLeft: 6 }}>Một bài đánh giá, không phải chẩn đoán</span>
+              <I.heart size={12} /> <span className="ml-1.5">Một bài đánh giá, không phải chẩn đoán</span>
             </Tag>
-            <h1 style={{ fontWeight: 800, fontSize: 'clamp(34px, 6vw, 72px)', lineHeight: 1.04, letterSpacing: '-0.03em', marginTop: 18, color: C.ink }}>
-              Cuộc sống công việc của bạn <span style={{ color: C.red }}>thật sự</span> đang ổn không?
+            <h1 className="mt-[18px] text-[clamp(34px,6vw,72px)] font-extrabold leading-[1.04] tracking-[-0.03em] text-ink">
+              Cuộc sống công việc của bạn <span className="text-primary">thật sự</span> đang ổn không?
             </h1>
-            <p style={{ fontSize: 17, lineHeight: 1.6, marginTop: 22, color: C.inkSoft, maxWidth: 600, fontWeight: 400 }}>
+            <p className="mt-[22px] max-w-[600px] text-[17px] font-normal leading-[1.6] text-ink-soft">
               5 phút để dừng lại, lắng nghe chính mình, và nhận về những gợi ý hồi phục cá nhân hóa. Bài test dựa trên các framework khoa học của WHO, Maslach Burnout Inventory, và HSE Stress Standards.
             </p>
             <div className="mt-8 md:mt-10 flex flex-wrap gap-3 md:gap-4 items-center">
               <button
                 onClick={onStart}
-                style={{ background: C.red, color: '#FFFFFF', fontSize: 15, fontWeight: 700, padding: '14px 26px', borderRadius: 999, border: 'none', cursor: 'pointer', boxShadow: '0 4px 14px rgba(225, 29, 46, 0.25)', display: 'inline-flex', alignItems: 'center', gap: 10, transition: 'all 0.2s ease' }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = C.redDeep; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = C.red; e.currentTarget.style.transform = 'translateY(0)'; }}
+                className="inline-flex items-center gap-2.5 rounded-full border-0 bg-primary px-[26px] py-[14px] text-[15px] font-bold text-white shadow-[0_4px_14px_rgba(225,29,46,0.25)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary-deep"
               >
                 {hasProgress ? 'Tiếp tục bài đang làm' : (isReturning ? 'Làm bài mới' : 'Bắt đầu nào')}
                 <I.arrowRight size={18} />
               </button>
-              <span style={{ fontSize: 13, color: C.inkSoft, fontWeight: 500 }}>Ẩn danh · Lưu cục bộ · ~5 phút</span>
+              <span className="text-[13px] font-medium text-ink-soft">Ẩn danh · Lưu cục bộ · ~5 phút</span>
             </div>
             {isReturning && lastEntry && (
-              <div style={{ marginTop: 36, background: C.surface, padding: '18px 22px', borderRadius: 14, display: 'flex', gap: 14, alignItems: 'center', maxWidth: 580 }}>
-                <div style={{ width: 44, height: 44, borderRadius: '50%', background: lastEntry.levelColor + '22', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div className="mt-9 flex max-w-[580px] items-center gap-3.5 rounded-[14px] bg-surface px-[22px] py-[18px]">
+                <div className={`flex h-11 w-11 items-center justify-center rounded-full ${levelBgSoftClass[lastEntry.level] || 'bg-[#F9731622]'}`}>
                   <I.activity size={20} color={lastEntry.levelColor} />
                 </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 12, color: C.inkSoft, fontWeight: 600 }}>Lần đánh giá gần nhất · {new Date(lastEntry.date).toLocaleDateString('vi-VN')}</div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: C.ink, marginTop: 2 }}>
+                <div className="flex-1">
+                  <div className="text-xs font-semibold text-ink-soft">Lần đánh giá gần nhất · {new Date(lastEntry.date).toLocaleDateString('vi-VN')}</div>
+                  <div className={`mt-0.5 text-[15px] font-bold ${levelColorClass[lastEntry.level] || 'text-ink'}`}>
                     Mức {lastEntry.level}/5 · {lastEntry.levelLabel}
-                    <span style={{ fontSize: 13, color: C.inkSoft, fontWeight: 500, marginLeft: 8 }}>({lastEntry.totalScore} điểm)</span>
+                    <span className="ml-2 text-[13px] font-medium text-ink-soft">({lastEntry.totalScore} điểm)</span>
                   </div>
                 </div>
               </div>
             )}
             {!isReturning && (
-              <div style={{ marginTop: 48, background: C.surfaceWarm, borderLeft: `3px solid ${C.red}`, padding: '20px 22px', borderRadius: '0 12px 12px 0', maxWidth: 580 }}>
-                <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+              <div className="mt-12 max-w-[580px] rounded-r-xl border-l-[3px] border-l-primary bg-surface-warm px-[22px] py-5">
+                <div className="flex items-start gap-3.5">
                   <I.smile size={22} color={C.red} />
                   <div>
-                    <div style={{ fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: C.red, fontWeight: 700, marginBottom: 4 }}>Bạn có biết?</div>
-                    <p style={{ fontSize: 15, lineHeight: 1.55, color: C.ink, fontWeight: 500 }}>Theo WHO, khoảng <strong>1/3 nhân sự ở châu Á</strong> trải qua dấu hiệu burnout ít nhất một lần mỗi năm. Nếu bạn cảm thấy mệt mỏi, bạn không một mình — và việc bạn dành thời gian cho bài test này đã là một bước đi đúng. 🌱</p>
+                    <div className="mb-1 text-[11px] font-bold uppercase tracking-[0.16em] text-primary">Bạn có biết?</div>
+                    <p className="text-[15px] font-medium leading-[1.55] text-ink">Theo WHO, khoảng <strong>1/3 nhân sự ở châu Á</strong> trải qua dấu hiệu burnout ít nhất một lần mỗi năm. Nếu bạn cảm thấy mệt mỏi, bạn không một mình — và việc bạn dành thời gian cho bài test này đã là một bước đi đúng. 🌱</p>
                   </div>
                 </div>
               </div>
             )}
           </div>
           <div className="md:col-span-5">
-            <div className="anim-fadeUp" style={{ background: C.surface, padding: 26, borderRadius: 16, animationDelay: '0.15s' }}>
-              <div style={{ fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: C.inkSoft, fontWeight: 700, marginBottom: 16 }}>Bài test diễn ra thế nào</div>
+            <div className="anim-fadeUp rounded-2xl bg-surface p-[26px] [animation-delay:150ms]">
+              <div className="mb-4 text-[11px] font-bold uppercase tracking-[0.18em] text-ink-soft">Bài test diễn ra thế nào</div>
               {[
                 { Icon: I.clock, title: 'Khoảng 5 phút', desc: '24 câu hỏi, mỗi câu một màn hình. Có nút Quay lại nếu bạn đổi ý.' },
                 { Icon: I.shield, title: 'Hoàn toàn ẩn danh', desc: 'Kết quả lưu trên thiết bị của bạn. Không ai khác xem được.' },
@@ -80,22 +92,22 @@ export function WelcomeScreen({
               ].map((step, i) => {
                 const StepIcon = step.Icon;
                 return (
-                  <div key={i} style={{ display: 'flex', gap: 14, paddingTop: i === 0 ? 0 : 14, paddingBottom: 14, borderBottom: i === 3 ? 'none' : `1px solid ${C.rule}` }}>
-                    <div style={{ width: 36, height: 36, borderRadius: 10, background: C.redSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <div key={i} className={`flex gap-3.5 pb-3.5 ${i === 0 ? 'pt-0' : 'pt-3.5'} ${i === 3 ? '' : 'border-b border-rule'}`}>
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-primary-soft">
                       <StepIcon size={18} color={C.red} />
                     </div>
                     <div>
-                      <div style={{ fontWeight: 700, fontSize: 15, color: C.ink }}>{step.title}</div>
-                      <div style={{ fontSize: 13, color: C.inkSoft, lineHeight: 1.5, marginTop: 2 }}>{step.desc}</div>
+                      <div className="text-[15px] font-bold text-ink">{step.title}</div>
+                      <div className="mt-0.5 text-[13px] leading-[1.5] text-ink-soft">{step.desc}</div>
                     </div>
                   </div>
                 );
               })}
             </div>
-            <div style={{ marginTop: 18, fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: C.inkMute, fontWeight: 700 }}>Dựa trên các framework khoa học</div>
+            <div className="mt-[18px] text-[11px] font-bold uppercase tracking-[0.16em] text-ink-mute">Dựa trên các framework khoa học</div>
             <div className="mt-3 flex flex-wrap gap-2">
               {['WHO ICD-11', 'MBI Maslach', 'HSE Standards', 'Job Demand–Control'].map((f) => (
-                <span key={f} style={{ fontSize: 12, fontWeight: 600, color: C.charcoal, padding: '6px 12px', background: '#FFFFFF', border: `1px solid ${C.rule}`, borderRadius: 999 }}>{f}</span>
+                <span key={f} className="rounded-full border border-rule bg-white px-3 py-1.5 text-xs font-semibold text-charcoal">{f}</span>
               ))}
             </div>
           </div>
@@ -103,7 +115,7 @@ export function WelcomeScreen({
       </div>
       <div className="px-5 md:px-12 max-w-7xl mx-auto pb-8">
         <Hairline />
-        <div className="mt-5" style={{ fontSize: 11, color: C.inkMute, fontWeight: 500 }}>
+        <div className="mt-5 text-[11px] font-medium text-ink-mute">
           DOCORP · Doing The Right Thing · Bài đánh giá nội bộ phục vụ mục đích tự nhận thức và hỗ trợ. Không thay thế tư vấn y tế chuyên môn.
         </div>
       </div>
@@ -115,19 +127,17 @@ export function MilestoneScreen({ milestone, progress, onContinue, C, I }) {
   const M = milestone;
   const Icon = I[M.iconKey] || I.sparkles;
   return (
-    <div className="min-h-screen w-full flex items-center justify-center px-6" style={{ background: C.surfaceWarm }}>
-      <div className="text-center max-w-xl w-full anim-fadeScale">
-        <div className="anim-iconBounce" style={{ width: 88, height: 88, borderRadius: '50%', background: '#FFFFFF', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 40px rgba(225, 29, 46, 0.15)', marginBottom: 24 }}>
+    <div className="min-h-screen w-full flex items-center justify-center bg-surface-warm px-6">
+      <div className="anim-fadeScale w-full max-w-xl text-center">
+        <div className="anim-iconBounce mb-6 inline-flex h-[88px] w-[88px] items-center justify-center rounded-full bg-white shadow-[0_10px_40px_rgba(225,29,46,0.15)]">
           <Icon size={40} color={C.red} />
         </div>
-        <div style={{ fontSize: 12, letterSpacing: '0.18em', textTransform: 'uppercase', color: C.red, fontWeight: 700, marginBottom: 12 }}>Đã hoàn thành {progress}%</div>
-        <h2 style={{ fontSize: 'clamp(26px, 4vw, 38px)', fontWeight: 800, color: C.ink, lineHeight: 1.15, letterSpacing: '-0.02em' }}>{M.title}</h2>
-        <p style={{ fontSize: 16, lineHeight: 1.6, color: C.inkSoft, marginTop: 16, fontWeight: 500 }}>{M.message}</p>
+        <div className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-primary">Đã hoàn thành {progress}%</div>
+        <h2 className="text-[clamp(26px,4vw,38px)] font-extrabold leading-[1.15] tracking-[-0.02em] text-ink">{M.title}</h2>
+        <p className="mt-4 text-base font-medium leading-[1.6] text-ink-soft">{M.message}</p>
         <button
           onClick={onContinue}
-          style={{ background: C.red, color: '#FFFFFF', fontSize: 15, fontWeight: 700, padding: '13px 26px', borderRadius: 999, border: 'none', cursor: 'pointer', boxShadow: '0 4px 14px rgba(225, 29, 46, 0.25)', display: 'inline-flex', alignItems: 'center', gap: 10, marginTop: 32 }}
-          onMouseEnter={(e) => e.currentTarget.style.background = C.redDeep}
-          onMouseLeave={(e) => e.currentTarget.style.background = C.red}
+          className="mt-8 inline-flex items-center gap-2.5 rounded-full border-0 bg-primary px-[26px] py-[13px] text-[15px] font-bold text-white shadow-[0_4px_14px_rgba(225,29,46,0.25)] transition-colors hover:bg-primary-deep"
         >
           {M.cta} <I.arrowRight size={18} />
         </button>
