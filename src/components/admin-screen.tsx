@@ -13,6 +13,8 @@ export function AdminScreen({ C, Api, Storage, DocorpLogo, Tag, Hairline, I, cla
   const [detailRecord, setDetailRecord] = useState(null);
   const [querySessionId, setQuerySessionId] = useState('');
   const [sessionFilter, setSessionFilter] = useState('');
+  const [queryBusinessCode, setQueryBusinessCode] = useState('');
+  const [businessCodeFilter, setBusinessCodeFilter] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [email, setEmail] = useState('');
@@ -33,13 +35,20 @@ export function AdminScreen({ C, Api, Storage, DocorpLogo, Tag, Hairline, I, cla
     return [1, 2, 3, 4, 5].map((level) => ({ level, count: map[level] }));
   };
 
-  const loadList = async (nextPage = page, nextFilter = sessionFilter, nextStartDate = startDate, nextEndDate = endDate) => {
+  const loadList = async (
+    nextPage = page,
+    nextFilter = sessionFilter,
+    nextBusinessCode = businessCodeFilter,
+    nextStartDate = startDate,
+    nextEndDate = endDate,
+  ) => {
     setLoading(true);
     try {
       const data = await Api.getAdminAssessments({
         page: nextPage,
         limit: 20,
         sessionId: nextFilter,
+        businessCode: nextBusinessCode,
         startDate: nextStartDate,
         endDate: nextEndDate,
       });
@@ -77,7 +86,7 @@ export function AdminScreen({ C, Api, Storage, DocorpLogo, Tag, Hairline, I, cla
     if (!authReady) return;
     const run = async () => {
       try {
-        await Promise.all([loadStats(), loadList(1, '')]);
+        await Promise.all([loadStats(), loadList(1, '', '')]);
       } catch (error) {
         console.error(error);
         alert('Không tải được dữ liệu admin. Vui lòng đăng nhập lại.');
@@ -92,7 +101,7 @@ export function AdminScreen({ C, Api, Storage, DocorpLogo, Tag, Hairline, I, cla
     if (!window.confirm('Ban chac chan muon xoa ban ghi nay?')) return;
     try {
       await Api.deleteAdminAssessment(id);
-      await Promise.all([loadStats(), loadList(page, sessionFilter, startDate, endDate)]);
+      await Promise.all([loadStats(), loadList(page, sessionFilter, businessCodeFilter, startDate, endDate)]);
     } catch (error) {
       console.error(error);
       alert('Xóa thất bại');
@@ -137,7 +146,8 @@ export function AdminScreen({ C, Api, Storage, DocorpLogo, Tag, Hairline, I, cla
   const handleSearch = async () => {
     try {
       setSessionFilter(querySessionId);
-      await loadList(1, querySessionId, startDate, endDate);
+      setBusinessCodeFilter(queryBusinessCode);
+      await loadList(1, querySessionId, queryBusinessCode, startDate, endDate);
     } catch (error) {
       console.error(error);
       alert('Tìm kiếm thất bại');
@@ -181,11 +191,12 @@ export function AdminScreen({ C, Api, Storage, DocorpLogo, Tag, Hairline, I, cla
 
         <div className="mb-4 rounded-[14px] bg-surface p-4">
           <div className="grid grid-cols-1 items-end gap-3 md:grid-cols-12">
-            <input type="text" value={querySessionId} onChange={(e) => setQuerySessionId(e.target.value)} placeholder="Session ID" className="w-full rounded-[10px] border border-rule px-3 py-2.5 text-sm outline-none md:col-span-5" />
+            <input type="text" value={querySessionId} onChange={(e) => setQuerySessionId(e.target.value)} placeholder="Session ID" className="w-full rounded-[10px] border border-rule px-3 py-2.5 text-sm outline-none md:col-span-4" />
+            <input type="text" value={queryBusinessCode} onChange={(e) => setQueryBusinessCode(e.target.value)} placeholder="Business code" className="w-full rounded-[10px] border border-rule px-3 py-2.5 text-sm outline-none md:col-span-3" />
             <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full rounded-[10px] border border-rule px-3 py-2.5 text-sm outline-none md:col-span-2" />
             <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full rounded-[10px] border border-rule px-3 py-2.5 text-sm outline-none md:col-span-2" />
-            <button onClick={handleSearch} className="w-full rounded-full border-0 bg-primary px-[18px] py-2.5 text-sm font-bold text-white md:col-span-2">Lọc</button>
-            <button onClick={async () => { setQuerySessionId(''); setSessionFilter(''); setStartDate(''); setEndDate(''); await loadList(1, '', '', ''); }} className="w-full rounded-full border border-rule bg-bg px-3 py-2.5 text-sm font-bold text-ink md:col-span-1">Reset</button>
+            <button onClick={handleSearch} className="w-full rounded-full border-0 bg-primary px-[18px] py-2.5 text-sm font-bold text-white md:col-span-1">Lọc</button>
+            <button onClick={async () => { setQuerySessionId(''); setSessionFilter(''); setQueryBusinessCode(''); setBusinessCodeFilter(''); setStartDate(''); setEndDate(''); await loadList(1, '', '', '', ''); }} className="w-full rounded-full border border-rule bg-bg px-3 py-2.5 text-sm font-bold text-ink md:col-span-12">Reset</button>
           </div>
         </div>
 
@@ -213,7 +224,7 @@ export function AdminScreen({ C, Api, Storage, DocorpLogo, Tag, Hairline, I, cla
             <table className="min-w-[980px] w-full border-collapse">
               <thead>
                 <tr className="bg-surface">
-                  {['Ngày', 'Session', 'Điểm', 'Mức', 'Rủi ro', 'Nguồn', 'Thao tác'].map((h) => <th key={h} className="px-3 py-3 text-left text-xs">{h}</th>)}
+                  {['Ngày', 'Session', 'Business', 'Điểm', 'Mức', 'Rủi ro', 'Nguồn', 'Thao tác'].map((h) => <th key={h} className="px-3 py-3 text-left text-xs">{h}</th>)}
                 </tr>
               </thead>
               <tbody>
@@ -221,6 +232,7 @@ export function AdminScreen({ C, Api, Storage, DocorpLogo, Tag, Hairline, I, cla
                   <tr key={item.id} className="border-t border-rule">
                     <td className="px-3 py-3 text-[13px]">{new Date(item.date).toLocaleString('vi-VN')}</td>
                     <td className="px-3 py-3 text-[13px]">{item.sessionId}</td>
+                    <td className="px-3 py-3 text-[13px]">{item.businessCode || '-'}</td>
                     <td className="px-3 py-3 text-[13px] font-bold">{item.totalScore}</td>
                     <td className="px-3 py-3 text-[13px]"><span className={`font-bold ${(item?.stressLevel?.level || 0) >= 4 ? 'text-[#DC2626]' : (item?.stressLevel?.level || 0) === 3 ? 'text-[#F97316]' : 'text-[#16A34A]'}`}>{item.stressLevel?.label || '-'}</span></td>
                     <td className="px-3 py-3 text-[13px]"><span className={`inline-block rounded-full px-2 py-1 text-[11px] font-bold ${(item?.stressLevel?.level || 0) >= 4 ? 'bg-red-100 text-red-700' : 'bg-emerald-50 text-emerald-800'}`}>{(item?.stressLevel?.level || 0) >= 4 ? 'High' : 'Normal'}</span></td>
@@ -234,7 +246,7 @@ export function AdminScreen({ C, Api, Storage, DocorpLogo, Tag, Hairline, I, cla
                   </tr>
                 ))}
                 {!loading && items.length === 0 && (
-                  <tr><td colSpan={7} className="px-4 py-4 text-center text-ink-soft">Không có dữ liệu</td></tr>
+                  <tr><td colSpan={8} className="px-4 py-4 text-center text-ink-soft">Không có dữ liệu</td></tr>
                 )}
               </tbody>
             </table>
@@ -243,8 +255,8 @@ export function AdminScreen({ C, Api, Storage, DocorpLogo, Tag, Hairline, I, cla
           <div className="flex flex-col gap-3 border-t border-rule px-3 py-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="text-[13px] text-ink-soft">Trang {page}/{totalPages} · {total} bản ghi</div>
             <div className="flex gap-2">
-              <button disabled={page <= 1 || loading} onClick={() => loadList(page - 1, sessionFilter, startDate, endDate)} className="rounded-lg border border-rule bg-bg px-3 py-2 text-[13px] disabled:opacity-50">Trước</button>
-              <button disabled={page >= totalPages || loading} onClick={() => loadList(page + 1, sessionFilter, startDate, endDate)} className="rounded-lg border border-rule bg-bg px-3 py-2 text-[13px] disabled:opacity-50">Sau</button>
+              <button disabled={page <= 1 || loading} onClick={() => loadList(page - 1, sessionFilter, businessCodeFilter, startDate, endDate)} className="rounded-lg border border-rule bg-bg px-3 py-2 text-[13px] disabled:opacity-50">Trước</button>
+              <button disabled={page >= totalPages || loading} onClick={() => loadList(page + 1, sessionFilter, businessCodeFilter, startDate, endDate)} className="rounded-lg border border-rule bg-bg px-3 py-2 text-[13px] disabled:opacity-50">Sau</button>
             </div>
           </div>
         </div>

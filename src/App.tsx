@@ -107,6 +107,11 @@ import { buildRecommendations, classifyCategory, computeScores, getStressLevel, 
     const [history, setHistory] = useState([]);
     const [hasProgress, setHasProgress] = useState(false);
     const [sessionId] = useState(() => Storage.getSessionId());
+    const [businessCode] = useState(() => {
+      const fromWindow = (window as any).DOCORP_BUSINESS_CODE || (window as any).BUSINESS_CODE;
+      const fromQuery = new URLSearchParams(window.location.search).get('businessCode');
+      return (fromQuery || fromWindow || '').toString().trim().toLowerCase();
+    });
 
     // On mount: load progress + history
     useEffect(() => {
@@ -144,7 +149,7 @@ import { buildRecommendations, classifyCategory, computeScores, getStressLevel, 
 
     const handleComplete = async () => {
       try {
-        const submitResult = await Api.submitAssessment(sessionId, answers);
+        const submitResult = await Api.submitAssessment(sessionId, answers, businessCode);
         setHistory((prev) => [
           ...prev,
           mapApiHistoryToLegacy({
@@ -279,7 +284,6 @@ import { buildRecommendations, classifyCategory, computeScores, getStressLevel, 
 
   export default Root;
   
-
 
 
 
