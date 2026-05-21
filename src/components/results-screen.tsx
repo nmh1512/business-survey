@@ -21,14 +21,13 @@ export function ResultsScreen({
   getStressLevel,
   buildRecommendations,
   classifyCategory,
-  C,
   I,
   Tag,
   Hairline,
   DocorpLogo,
 }) {
     const { totalScore, categoryScores } = useMemo(() => computeScores(answers), [answers]);
-    const stressLevel = getStressLevel(totalScore, C);
+    const stressLevel = getStressLevel(totalScore);
     const drivers = categoryScores.filter((c) => c.id !== 'burnout');
     const burnout = categoryScores.find((c) => c.id === 'burnout');
 
@@ -43,7 +42,7 @@ export function ResultsScreen({
       { label: 'Sụt giảm hiệu suất', labelEn: 'Effectiveness', value: ((burnoutValues[2] + burnoutValues[5]) / 10) * 100, desc: 'Cảm giác hiệu quả công việc đang giảm' },
     ];
 
-    const recommendations = useMemo(() => buildRecommendations(categoryScores, C), [categoryScores]);
+    const recommendations = useMemo(() => buildRecommendations(categoryScores), [categoryScores]);
 
     // Trend data (include current result)
     const trendData = useMemo(() => {
@@ -90,7 +89,7 @@ export function ResultsScreen({
               <button className="inline-flex items-center gap-1.5 rounded-full border border-rule bg-bg px-4 py-[9px] text-[13px] font-bold text-ink" onClick={() => window.print()}>
                 <I.printer size={14} /> In
               </button>
-              <button className="inline-flex items-center gap-1.5 rounded-full border-0 bg-primary px-4 py-[9px] text-[13px] font-bold text-white shadow-[0_4px_12px_rgba(225,29,46,0.25)]" onClick={onRestart}>
+              <button className="inline-flex items-center gap-1.5 rounded-full border-0 bg-primary px-4 py-[9px] text-[13px] font-bold text-white shadow-[0_4px_12px_color-mix(in_srgb,var(--primary)_28%,transparent)]" onClick={onRestart}>
                 <I.rotate size={14} /> Làm lại
               </button>
             </div>
@@ -102,7 +101,9 @@ export function ResultsScreen({
           <div className="max-w-6xl mx-auto anim-fadeUp">
             <div className="mb-7 rounded-[18px] border-l-4 border-l-primary bg-surface-warm px-6 py-[22px]">
               <div className="flex items-start gap-3.5">
-                <I.heart size={26} color={C.red} />
+                <span className="text-primary">
+                  <I.heart size={26} color="currentColor" />
+                </span>
                 <div>
                   <div className="mb-1 text-xs font-bold uppercase tracking-[0.16em] text-primary">
                     Cảm ơn bạn đã thành thật
@@ -149,11 +150,11 @@ export function ResultsScreen({
 
               <div className="mb-3 flex h-14 gap-1">
                 {[
-                  { range: [24, 43], color: C.level1, label: 'Lành mạnh' },
-                  { range: [44, 62], color: C.level2, label: 'Cấp tính' },
-                  { range: [63, 82], color: C.level3, label: 'Lặp lại' },
-                  { range: [83, 101], color: C.level4, label: 'Mãn tính' },
-                  { range: [102, 120], color: C.level5, label: 'Burnout' },
+                  { range: [24, 43], label: 'Lành mạnh' },
+                  { range: [44, 62], label: 'Cấp tính' },
+                  { range: [63, 82], label: 'Lặp lại' },
+                  { range: [83, 101], label: 'Mãn tính' },
+                  { range: [102, 120], label: 'Burnout' },
                 ].map((band, i) => {
                   const inBand = totalScore >= band.range[0] && totalScore <= band.range[1];
                   const bandBgClass = i === 0 ? 'bg-[#16A34A]' : i === 1 ? 'bg-[#EAB308]' : i === 2 ? 'bg-[#F97316]' : i === 3 ? 'bg-[#DC2626]' : 'bg-[#7F1D1D]';
@@ -182,7 +183,7 @@ export function ResultsScreen({
                 </div>
                 <div className="rounded-[14px] bg-surface p-4">
                   <div className="text-[32px] font-extrabold leading-none text-primary">
-                    {drivers.filter(c => classifyCategory(c.sum, c.questions.length, C).levelEn === 'High').length}
+                    {drivers.filter(c => classifyCategory(c.sum, c.questions.length).levelEn === 'High').length}
                   </div>
                   <div className="mt-2 text-[11px] font-bold uppercase tracking-[0.1em] text-ink-soft">
                     Yếu tố cao
@@ -222,11 +223,11 @@ export function ResultsScreen({
                     <div className="h-80 rounded-[18px] bg-surface p-5">
                       <ResponsiveContainer width="100%" height="100%">
                         <LineChart data={trendData} margin={{ top: 10, right: 16, left: -8, bottom: 4 }}>
-                          <CartesianGrid stroke={C.rule} strokeDasharray="3 3" vertical={false} />
-                          <XAxis dataKey="date" tick={{ fill: C.inkSoft, fontSize: 11, fontWeight: 600 }} stroke={C.rule} />
-                          <YAxis domain={[24, 120]} tick={{ fill: C.inkMute, fontSize: 11 }} stroke={C.rule} />
+                          <CartesianGrid stroke="#EAEAEC" strokeDasharray="3 3" vertical={false} />
+                          <XAxis dataKey="date" tick={{ fill: '#5A5A5F', fontSize: 11, fontWeight: 600 }} stroke="#EAEAEC" />
+                          <YAxis domain={[24, 120]} tick={{ fill: '#9A9AA0', fontSize: 11 }} stroke="#EAEAEC" />
                           <Tooltip content={<TrendTooltip />} />
-                          <Line type="monotone" dataKey="score" stroke={C.red} strokeWidth={3} dot={{ fill: C.red, r: 5 }} activeDot={{ r: 7 }} />
+                          <Line type="monotone" dataKey="score" stroke="var(--primary)" strokeWidth={3} dot={{ fill: 'var(--primary)', r: 5 }} activeDot={{ r: 7 }} />
                         </LineChart>
                       </ResponsiveContainer>
                     </div>
@@ -255,10 +256,10 @@ export function ResultsScreen({
                 <div className="h-[360px] rounded-[18px] bg-surface p-5">
                   <ResponsiveContainer width="100%" height="100%">
                     <RadarChart data={radarData}>
-                      <PolarGrid stroke={C.rule} />
-                      <PolarAngleAxis dataKey="subject" tick={{ fill: C.ink, fontSize: 12, fontWeight: 700 }} />
-                      <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: C.inkMute, fontSize: 10 }} stroke={C.rule} />
-                      <Radar name="Stress" dataKey="A" stroke={C.red} fill={C.red} fillOpacity={0.22} strokeWidth={2.5} />
+                      <PolarGrid stroke="#EAEAEC" />
+                      <PolarAngleAxis dataKey="subject" tick={{ fill: '#1A1A1A', fontSize: 12, fontWeight: 700 }} />
+                      <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: '#9A9AA0', fontSize: 10 }} stroke="#EAEAEC" />
+                      <Radar name="Stress" dataKey="A" stroke="var(--primary)" fill="var(--primary)" fillOpacity={0.22} strokeWidth={2.5} />
                     </RadarChart>
                   </ResponsiveContainer>
                 </div>
@@ -267,7 +268,7 @@ export function ResultsScreen({
 
             <div className="grid md:grid-cols-2 gap-x-8 gap-y-1 mt-4">
               {drivers.sort((a, b) => b.perQuestionAvg - a.perQuestionAvg).map((d) => {
-                const cls = classifyCategory(d.sum, d.questions.length, C);
+                const cls = classifyCategory(d.sum, d.questions.length);
                 const pct = Math.round((d.sum / d.max) * 100);
                 const DIcon = I[d.iconKey];
                 return (
@@ -314,7 +315,6 @@ export function ResultsScreen({
               </div>
               <div className="md:col-span-8 space-y-6">
                 {burnoutBreakdown.map((b, i) => {
-                  const color = b.value >= 70 ? C.level4 : b.value >= 50 ? C.level3 : b.value >= 30 ? C.level2 : C.level1;
                   return (
                     <div key={i}>
                       <div className="flex items-baseline justify-between mb-2 flex-wrap gap-2">
@@ -361,7 +361,9 @@ export function ResultsScreen({
                     <div className="md:col-span-3">
                       <div className="flex items-center gap-3">
                         <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-bg shadow-[0_2px_8px_rgba(0,0,0,0.06)]">
-                          <RIcon size={20} color={C.red} />
+                          <span className="text-primary">
+                            <RIcon size={20} color="currentColor" />
+                          </span>
                         </div>
                         <div className="text-[38px] font-extrabold leading-none text-primary opacity-40">
                           {String(idx + 1).padStart(2, '0')}
@@ -382,7 +384,7 @@ export function ResultsScreen({
                         {rec.items.map((item, i) => (
                           <li key={i} className="flex gap-3.5 border-b border-rule py-3 first:border-t">
                             <div className="flex h-[26px] min-w-[26px] shrink-0 items-center justify-center rounded-full bg-primary-soft">
-                              <I.check size={13} strokeWidth={3} color={C.red} />
+                              <I.check size={13} strokeWidth={3} color="var(--primary)" />
                             </div>
                             <span className="text-[15px] font-medium leading-[1.55] text-ink">
                               {item}
@@ -401,7 +403,9 @@ export function ResultsScreen({
         {/* Closing */}
         <section className="px-5 md:px-10 py-12 md:py-16">
           <div className="max-w-3xl mx-auto text-center">
-            <I.sun size={36} color={C.red} />
+            <span className="inline-flex text-primary">
+              <I.sun size={36} color="currentColor" />
+            </span>
             <h3 className="mt-4 text-[clamp(22px,3vw,30px)] font-extrabold tracking-[-0.02em] text-ink">
               Cảm ơn vì đã dành thời gian cho chính mình.
             </h3>

@@ -1,7 +1,7 @@
 ﻿// @ts-nocheck
 import { useEffect, useMemo, useState } from 'react';
 
-export function AdminScreen({ C, Api, Storage, DocorpLogo, Tag, Hairline, I, classifyCategory, buildRecommendations }) {
+export function AdminScreen({ Api, Storage, DocorpLogo, Tag, Hairline, I, classifyCategory, buildRecommendations }) {
   const [stats, setStats] = useState(null);
   const [items, setItems] = useState([]);
   const [distribution, setDistribution] = useState([]);

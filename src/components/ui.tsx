@@ -56,7 +56,7 @@ export function DocorpLogo({ size = 28, withTagline = false, colors }: DocorpLog
       <img
         src="/logo.png"
         alt="DOCORP"
-        className={`${logoSizeClass} object-contain object-left`}
+        className={`w-[150px] object-contain object-left`}
       />
       {withTagline && (
         <div className={`mt-[0.15em] font-bold tracking-[0.18em] ${taglineClass} ${TEXT_COLOR_CLASS[colors.red] || 'text-primary'}`}>

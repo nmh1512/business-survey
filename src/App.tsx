@@ -13,28 +13,6 @@ import { Storage } from './services/storage';
 import { buildRecommendations, classifyCategory, computeScores, getStressLevel, mapApiHistoryToLegacy } from './utils/scoring';
 
   /* ================================================================== */
-  /*                              TOKENS                                */
-  /* ================================================================== */
-  const C = {
-    bg: '#FFFFFF',
-    surface: '#F7F7F8',
-    surfaceWarm: '#FFF7F7',
-    ink: '#1A1A1A',
-    inkSoft: '#5A5A5F',
-    inkMute: '#9A9AA0',
-    rule: '#EAEAEC',
-    red: '#E11D2E',
-    redDeep: '#B81525',
-    redSoft: '#FCE7E9',
-    charcoal: '#2A2A2A',
-    level1: '#16A34A',
-    level2: '#EAB308',
-    level3: '#F97316',
-    level4: '#DC2626',
-    level5: '#7F1D1D',
-  };
-
-  /* ================================================================== */
   /*                         INLINE SVG ICONS                           */
   /* ================================================================== */
   const Svg = ({ size = 24, color = 'currentColor', strokeWidth = 2, children, fill = 'none' }) => (
@@ -79,7 +57,7 @@ import { buildRecommendations, classifyCategory, computeScores, getStressLevel, 
   /*                              LOGO                                  */
   /* ================================================================== */
   const DocorpLogo = ({ size = 28, withTagline = false }) => (
-    <UiDocorpLogo size={size} withTagline={withTagline} colors={{ red: C.red }} />
+    <UiDocorpLogo size={size} withTagline={withTagline} colors={{ red: '#E11D2E' }} />
   );
 
   /* ================================================================== */
@@ -89,10 +67,10 @@ import { buildRecommendations, classifyCategory, computeScores, getStressLevel, 
   /* ================================================================== */
   /*                          SHARED UI                                 */
   /* ================================================================== */
-  const Tag = ({ children, color = C.red, bg = C.redSoft }) => (
+  const Tag = ({ children, color = '#E11D2E', bg = '#FCE7E9' }) => (
     <UiTag color={color} bg={bg}>{children}</UiTag>
   );
-  const Hairline = () => <UiHairline ruleColor={C.rule} />;
+  const Hairline = () => <UiHairline ruleColor="#EAEAEC" />;
 
   /* ================================================================== */
   /*                         RESULTS SCREEN                             */
@@ -118,7 +96,7 @@ import { buildRecommendations, classifyCategory, computeScores, getStressLevel, 
       const loadHistory = async () => {
         try {
           const apiHistory = await Api.getHistory(sessionId);
-          const normalized = [...apiHistory].reverse().map((entry) => mapApiHistoryToLegacy(entry, C));
+          const normalized = [...apiHistory].reverse().map((entry) => mapApiHistoryToLegacy(entry));
           setHistory(normalized);
         } catch (error) {
           setHistory(Storage.getHistory());
@@ -157,7 +135,7 @@ import { buildRecommendations, classifyCategory, computeScores, getStressLevel, 
             totalScore: submitResult.totalScore,
             stressLevel: submitResult.stressLevel,
             categoryScores: submitResult.categoryScores,
-          }, C),
+          }),
         ]);
       } catch (error) {
         console.error("Lỗi khi lưu kết quả lên server:", error);
@@ -175,7 +153,7 @@ import { buildRecommendations, classifyCategory, computeScores, getStressLevel, 
           };
           setHistory((prev) => [
             ...prev,
-            mapApiHistoryToLegacy(localEntry, C),
+            mapApiHistoryToLegacy(localEntry),
           ]);
         } catch (localError) {
           console.error("Lỗi khi tạo lịch sử cục bộ:", localError);
@@ -203,7 +181,6 @@ import { buildRecommendations, classifyCategory, computeScores, getStressLevel, 
             onStart={handleStart}
             hasProgress={hasProgress}
             history={history}
-            C={C}
             I={I}
             Tag={Tag}
             Hairline={Hairline}
@@ -219,7 +196,6 @@ import { buildRecommendations, classifyCategory, computeScores, getStressLevel, 
             ALL_QUESTIONS={ALL_QUESTIONS}
             CATEGORIES={CATEGORIES}
             I={I}
-            C={C}
             Storage={Storage}
             MILESTONES={MILESTONES}
             SCALE={SCALE}
@@ -235,7 +211,6 @@ import { buildRecommendations, classifyCategory, computeScores, getStressLevel, 
             getStressLevel={getStressLevel}
             buildRecommendations={buildRecommendations}
             classifyCategory={classifyCategory}
-            C={C}
             I={I}
             Tag={Tag}
             Hairline={Hairline}
@@ -265,7 +240,6 @@ import { buildRecommendations, classifyCategory, computeScores, getStressLevel, 
           path="/admin"
           element={(
             <AdminScreen
-              C={C}
               Api={Api}
               Storage={Storage}
               DocorpLogo={DocorpLogo}
@@ -284,9 +258,6 @@ import { buildRecommendations, classifyCategory, computeScores, getStressLevel, 
 
   export default Root;
   
-
-
-
 
 
 

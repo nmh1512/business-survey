@@ -3,7 +3,6 @@ export function WelcomeScreen({
   onStart,
   hasProgress,
   history,
-  C,
   I,
   Tag,
   Hairline,
@@ -25,6 +24,7 @@ export function WelcomeScreen({
     4: 'bg-[#DC262622]',
     5: 'bg-[#7F1D1D22]',
   };
+  const textFooter = import.meta.env.VITE_APP_TEXT_FOOTER || 'DOCORP · Doing The Right Thing · Bài đánh giá nội bộ phục vụ mục đích tự nhận thức và hỗ trợ. Không thay thế tư vấn y tế chuyên môn.';
 
   return (
     <div className="min-h-screen w-full bg-bg">
@@ -72,7 +72,9 @@ export function WelcomeScreen({
             {!isReturning && (
               <div className="mt-12 max-w-[580px] rounded-r-xl border-l-[3px] border-l-primary bg-surface-warm px-[22px] py-5">
                 <div className="flex items-start gap-3.5">
-                  <I.smile size={22} color={C.red} />
+                  <span className="text-primary">
+                    <I.smile size={22} color="currentColor" />
+                  </span>
                   <div>
                     <div className="mb-1 text-[11px] font-bold uppercase tracking-[0.16em] text-primary">Bạn có biết?</div>
                     <p className="text-[15px] font-medium leading-[1.55] text-ink">Theo WHO, khoảng <strong>1/3 nhân sự ở châu Á</strong> trải qua dấu hiệu burnout ít nhất một lần mỗi năm. Nếu bạn cảm thấy mệt mỏi, bạn không một mình — và việc bạn dành thời gian cho bài test này đã là một bước đi đúng. 🌱</p>
@@ -94,7 +96,9 @@ export function WelcomeScreen({
                 return (
                   <div key={i} className={`flex gap-3.5 pb-3.5 ${i === 0 ? 'pt-0' : 'pt-3.5'} ${i === 3 ? '' : 'border-b border-rule'}`}>
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-primary-soft">
-                      <StepIcon size={18} color={C.red} />
+                      <span className="text-primary">
+                        <StepIcon size={18} color="currentColor" />
+                      </span>
                     </div>
                     <div>
                       <div className="text-[15px] font-bold text-ink">{step.title}</div>
@@ -115,22 +119,24 @@ export function WelcomeScreen({
       </div>
       <div className="px-5 md:px-12 max-w-7xl mx-auto pb-8">
         <Hairline />
-        <div className="mt-5 text-[11px] font-medium text-ink-mute">
-          DOCORP · Doing The Right Thing · Bài đánh giá nội bộ phục vụ mục đích tự nhận thức và hỗ trợ. Không thay thế tư vấn y tế chuyên môn.
+        <div className="mt-5 text-sm font-medium text-ink-mute">
+          { textFooter }
         </div>
       </div>
     </div>
   );
 }
 
-export function MilestoneScreen({ milestone, progress, onContinue, C, I }) {
+export function MilestoneScreen({ milestone, progress, onContinue, I }) {
   const M = milestone;
   const Icon = I[M.iconKey] || I.sparkles;
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-surface-warm px-6">
       <div className="anim-fadeScale w-full max-w-xl text-center">
         <div className="anim-iconBounce mb-6 inline-flex h-[88px] w-[88px] items-center justify-center rounded-full bg-white shadow-[0_10px_40px_rgba(225,29,46,0.15)]">
-          <Icon size={40} color={C.red} />
+          <span className="text-primary">
+            <Icon size={40} color="currentColor" />
+          </span>
         </div>
         <div className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-primary">Đã hoàn thành {progress}%</div>
         <h2 className="text-[clamp(26px,4vw,38px)] font-extrabold leading-[1.15] tracking-[-0.02em] text-ink">{M.title}</h2>

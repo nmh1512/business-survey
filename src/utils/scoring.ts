@@ -1,31 +1,39 @@
 ﻿// @ts-nocheck
 import { CATEGORIES } from '../constants/assessment';
 
-export function mapApiHistoryToLegacy(entry, colors) {
+const COLORS = {
+  level1: '#16A34A',
+  level2: '#EAB308',
+  level3: '#F97316',
+  level4: '#DC2626',
+  level5: '#7F1D1D',
+};
+
+export function mapApiHistoryToLegacy(entry) {
   return {
     date: entry.date,
     totalScore: entry.totalScore,
     level: entry.stressLevel?.level ?? 0,
     levelLabel: entry.stressLevel?.label ?? '',
-    levelColor: entry.stressLevel?.color ?? colors.level3,
+    levelColor: entry.stressLevel?.color ?? COLORS.level3,
     categories: (entry.categoryScores || []).map((c) => ({ id: c.id, sum: c.sum, max: c.max })),
   };
 }
 
-export function getStressLevel(total, colors) {
-  if (total <= 43) return { level: 1, label: 'Stress lành mạnh', sub: 'Eustress · Bạn đang cân bằng tốt', color: colors.level1, emoji: '🌱', summary: 'Mức stress của bạn đang ở vùng lành mạnh, mang tính tạo động lực. Bạn đang xử lý áp lực một cách xây dựng — hãy tiếp tục bảo vệ những thói quen đang giúp bạn ổn.' };
-  if (total <= 62) return { level: 2, label: 'Stress cấp tính', sub: 'Áp lực ngắn hạn', color: colors.level2, emoji: '🌤️', summary: 'Bạn đang trải qua những đợt áp lực ngắn. Vẫn nằm trong tầm kiểm soát, nhưng đáng để quan sát — vài điều chỉnh nhỏ ngay bây giờ sẽ tránh tình trạng tích lũy.' };
-  if (total <= 82) return { level: 3, label: 'Stress lặp lại', sub: 'Áp lực đang tái diễn', color: colors.level3, emoji: '⛅', summary: 'Stress đang trở thành một mô hình lặp lại. Hồi phục khó hơn bình thường. Đây là thời điểm để xác định 1–2 nguyên nhân chính và xử lý chúng có chủ đích.' };
-  if (total <= 101) return { level: 4, label: 'Stress mãn tính', sub: 'Quá tải kéo dài', color: colors.level4, emoji: '🌧️', summary: 'Bạn đang gánh một mức quá tải kéo dài. Hiệu suất, sự tập trung và sức khỏe tinh thần đều đang chịu rủi ro. Cần một can thiệp có cấu trúc — về khối lượng, ranh giới và sự hỗ trợ.' };
-  return { level: 5, label: 'Nguy cơ burnout cao', sub: 'Tín hiệu quan trọng — cần được ưu tiên', color: colors.level5, emoji: '⚠️', summary: 'Nhiều tín hiệu cho thấy nguy cơ burnout đã ở mức cao. Điều này xứng đáng được hành động ngay lập tức và một cách nhân ái — giảm tải, tìm kiếm hỗ trợ, ưu tiên hồi phục. Bạn không một mình.' };
+export function getStressLevel(total) {
+  if (total <= 43) return { level: 1, label: 'Stress lành mạnh', sub: 'Eustress · Bạn đang cân bằng tốt', color: COLORS.level1, emoji: '🌱', summary: 'Mức stress của bạn đang ở vùng lành mạnh, mang tính tạo động lực. Bạn đang xử lý áp lực một cách xây dựng — hãy tiếp tục bảo vệ những thói quen đang giúp bạn ổn.' };
+  if (total <= 62) return { level: 2, label: 'Stress cấp tính', sub: 'Áp lực ngắn hạn', color: COLORS.level2, emoji: '🌤️', summary: 'Bạn đang trải qua những đợt áp lực ngắn. Vẫn nằm trong tầm kiểm soát, nhưng đáng để quan sát — vài điều chỉnh nhỏ ngay bây giờ sẽ tránh tình trạng tích lũy.' };
+  if (total <= 82) return { level: 3, label: 'Stress lặp lại', sub: 'Áp lực đang tái diễn', color: COLORS.level3, emoji: '⛅', summary: 'Stress đang trở thành một mô hình lặp lại. Hồi phục khó hơn bình thường. Đây là thời điểm để xác định 1–2 nguyên nhân chính và xử lý chúng có chủ đích.' };
+  if (total <= 101) return { level: 4, label: 'Stress mãn tính', sub: 'Quá tải kéo dài', color: COLORS.level4, emoji: '🌧️', summary: 'Bạn đang gánh một mức quá tải kéo dài. Hiệu suất, sự tập trung và sức khỏe tinh thần đều đang chịu rủi ro. Cần một can thiệp có cấu trúc — về khối lượng, ranh giới và sự hỗ trợ.' };
+  return { level: 5, label: 'Nguy cơ burnout cao', sub: 'Tín hiệu quan trọng — cần được ưu tiên', color: COLORS.level5, emoji: '⚠️', summary: 'Nhiều tín hiệu cho thấy nguy cơ burnout đã ở mức cao. Điều này xứng đáng được hành động ngay lập tức và một cách nhân ái — giảm tải, tìm kiếm hỗ trợ, ưu tiên hồi phục. Bạn không một mình.' };
 }
 
-export function classifyCategory(sum, count, colors) {
+export function classifyCategory(sum, count) {
   const lowMax = count * 2;
   const moderateMax = count * (10 / 3);
-  if (sum <= lowMax) return { level: 'Thấp', levelEn: 'Low', color: colors.level1 };
-  if (sum <= moderateMax) return { level: 'Trung bình', levelEn: 'Moderate', color: colors.level3 };
-  return { level: 'Cao', levelEn: 'High', color: colors.level4 };
+  if (sum <= lowMax) return { level: 'Thấp', levelEn: 'Low', color: COLORS.level1 };
+  if (sum <= moderateMax) return { level: 'Trung bình', levelEn: 'Moderate', color: COLORS.level3 };
+  return { level: 'Cao', levelEn: 'High', color: COLORS.level4 };
 }
 
 const RECOMMENDATIONS = {
@@ -50,9 +58,9 @@ export function computeScores(answers) {
   return { totalScore, categoryScores };
 }
 
-export function buildRecommendations(categoryScores, colors) {
+export function buildRecommendations(categoryScores) {
   const ranked = [...categoryScores].sort((a, b) => b.perQuestionAvg - a.perQuestionAvg);
-  const primary = ranked.filter((cat) => classifyCategory(cat.sum, cat.questions.length, colors).levelEn === 'High');
+  const primary = ranked.filter((cat) => classifyCategory(cat.sum, cat.questions.length).levelEn === 'High');
   const drivers = primary.length > 0 ? primary : [ranked[0]];
   return drivers.map((cat) => ({ categoryId: cat.id, label: cat.label, iconKey: cat.iconKey, ...RECOMMENDATIONS[cat.id] }));
 }

@@ -10,7 +10,6 @@ export function AssessmentScreen({
   ALL_QUESTIONS,
   CATEGORIES,
   I,
-  C,
   Storage,
   MILESTONES,
   SCALE,
@@ -65,7 +64,6 @@ export function AssessmentScreen({
       <MilestoneScreen
         milestone={MILESTONES[activeMilestone]}
         progress={Math.round((activeMilestone / total) * 100)}
-        C={C}
         I={I}
         onContinue={() => {
           setActiveMilestone(null);
@@ -94,7 +92,9 @@ export function AssessmentScreen({
         <div className="mx-auto mt-5 max-w-4xl">
           <div className="mb-2.5 flex items-center justify-between">
             <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.06em] text-ink-soft">
-              <CatIcon size={14} color={C.red} />
+              <span className="text-primary">
+                <CatIcon size={14} color="currentColor" />
+              </span>
               {cat.icon} · {cat.label}
             </span>
             <span className="text-sm font-bold text-ink">
@@ -102,7 +102,7 @@ export function AssessmentScreen({
             </span>
           </div>
 
-          <progress className="w-full h-1.5 border-0 rounded-full overflow-hidden bg-surface [&::-webkit-progress-bar]:bg-surface [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-gradient-to-r [&::-webkit-progress-value]:from-[#e11d48] [&::-webkit-progress-value]:to-[#be123c] [&::-webkit-progress-value]:transition-[width] [&::-webkit-progress-value]:duration-700 [&::-webkit-progress-value]:ease-in-out [&::-moz-progress-bar]:rounded-full [&::-moz-progress-bar]:bg-gradient-to-r [&::-moz-progress-bar]:from-[#e11d48] [&::-moz-progress-bar]:to-[#be123c] [&::-moz-progress-bar]:transition-[width] [&::-moz-progress-bar]:duration-700 [&::-moz-progress-bar]:ease-in-out" max={100} value={progress} />
+          <progress className="w-full h-1.5 border-0 rounded-full overflow-hidden bg-surface [&::-webkit-progress-bar]:bg-surface [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-gradient-to-r [&::-webkit-progress-value]:from-primary [&::-webkit-progress-value]:to-primary-deep [&::-webkit-progress-value]:transition-[width] [&::-webkit-progress-value]:duration-700 [&::-webkit-progress-value]:ease-in-out [&::-moz-progress-bar]:rounded-full [&::-moz-progress-bar]:bg-gradient-to-r [&::-moz-progress-bar]:from-primary [&::-moz-progress-bar]:to-primary-deep [&::-moz-progress-bar]:transition-[width] [&::-moz-progress-bar]:duration-700 [&::-moz-progress-bar]:ease-in-out" max={100} value={progress} />
         </div>
       </div>
 
@@ -118,7 +118,9 @@ export function AssessmentScreen({
           </h2>
 
           <div className="mt-3.5 inline-flex items-center gap-2 text-[13px] font-medium text-ink-soft">
-            <I.leaf size={14} color={C.red} />
+            <span className="text-primary">
+              <I.leaf size={14} color="currentColor" />
+            </span>
             <span>Hãy nghĩ về 2–4 tuần gần nhất</span>
           </div>
 
